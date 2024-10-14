@@ -23,7 +23,7 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cors());
 
-app.use('/api/github', githubRoutes);
+app.use('/api/oauth', githubRoutes);
 
 https: app.use(function (req, res, next) {
     var allowedOrigins = [

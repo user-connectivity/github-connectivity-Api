@@ -1,6 +1,24 @@
 const githubHelper = require("../helpers/githubHelper");
 const githubUserModel = require("../models/githubIntegration");
 
+// Handle the User Retrieval
+exports.getUser = async (req, res) => {
+  const { accessToken } = req.query;
+
+  try {
+    // Find user in the database
+    const user = await githubUserModel.findOne({ accessToken });
+
+    res.json({
+      message: "User retrieved successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error during user retrieval:", error);
+    res.status(500).json({ message: "User retrieval failed" });
+  }
+};
+
 // Handle the OAuth2 callback
 exports.githubCallback = async (req, res) => {
   const { code, state } = req.body;
@@ -30,11 +48,29 @@ exports.githubCallback = async (req, res) => {
 
     res.json({
       message: "Authentication successful",
-      user: user,
+      data: user,
       accessToken,
     });
   } catch (error) {
     console.error("Error during GitHub OAuth:", error);
     res.status(500).json({ message: "Authentication failed" });
+  }
+};
+
+// Handle the User Delete
+exports.deleteUser = async (req, res) => {
+  const { accessToken } = req.query;
+
+  try {
+    // Delete user already exists in the database
+    const deleteUser = await githubUserModel.deleteOne({ accessToken });
+
+    res.json({
+      message: "User deleted successfully",
+      data: deleteUser,
+    });
+  } catch (error) {
+    console.error("Error during User delete:", error);
+    res.status(500).json({ message: "Delete user operation failed" });
   }
 };
