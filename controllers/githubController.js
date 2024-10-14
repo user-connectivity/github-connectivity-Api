@@ -9,10 +9,16 @@ exports.getUser = async (req, res) => {
     // Find user in the database
     const user = await githubUserModel.findOne({ accessToken });
 
-    res.json({
-      message: "User retrieved successfully",
-      data: user,
-    });
+    if (user) {
+      res.json({
+        message: "User retrieved successfully",
+        data: user,
+      });
+    } else {
+      res.json({
+        message: "User not found",
+      });
+    }
   } catch (error) {
     console.error("Error during user retrieval:", error);
     res.status(500).json({ message: "User retrieval failed" });
@@ -65,10 +71,16 @@ exports.deleteUser = async (req, res) => {
     // Delete user already exists in the database
     const deleteUser = await githubUserModel.deleteOne({ accessToken });
 
-    res.json({
-      message: "User deleted successfully",
-      data: deleteUser,
-    });
+    if (deleteUser.deletedCount > 0) {
+      res.json({
+        message: "User deleted successfully",
+        data: deleteUser,
+      });
+    } else {
+      res.json({
+        message: "User not found",
+      });
+    }
   } catch (error) {
     console.error("Error during User delete:", error);
     res.status(500).json({ message: "Delete user operation failed" });
